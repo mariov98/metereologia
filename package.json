@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mariov98/metereologia#readme",
   "dependencies": {
+    "openweather-apis": "^4.4.1",
     "request": "^2.88.2"
   }
 }
