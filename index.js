@@ -23,10 +23,9 @@ app.post("/temp", function(req, res) {
         weather.setLang('pt');
         weather.setAPPID(apiKey);
         weather.setUnits('metric');
-        weather.setCity("lisboa");
-        console.log(req.body)
+        weather.setCity(req.body.city);
         weather.getTemperature(function(err, temp){
-            console.log(temp)
+            res.send('<h1>'+ req.body.city +'</h1><h4>'+temp+'</h4>');
         });
 });
 
