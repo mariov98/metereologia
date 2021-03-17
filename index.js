@@ -1,87 +1,35 @@
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser')
 var weather = require('openweather-apis');
-const http = require('http');
-const { parse } = require('querystring');
+const handlebars = require('express-handlebars')
 let apiKey = '34bc4e52df32eb5758d9e67bd2b39e43';
+const path = require('path');
 
 
-	// English - en, Russian - ru, Italian - it, Spanish - es (or sp),
-	// Ukrainian - uk (or ua), German - de, Portuguese - pt,Romanian - ro,
-	// Polish - pl, Finnish - fi, Dutch - nl, French - fr, Bulgarian - bg,
-	// Swedish - sv (or se), Chinese Tra - zh_tw, Chinese Sim - zh (or zh_cn),
-	// Turkish - tr, Croatian - hr, Catalan - ca
+app.engine('handlebars', handlebars({ defaultLayout: 'main' }))
+app.set('view engine', 'handlebars')
+    //Body Parser
+app.use(bodyParser.urlencoded({ extended: false }))
+    //app.use(bodyParser.json);
+app.use(express.static(path.join(__dirname, '/')));
+
+app.get("/", function(req, res) {
+    res.render('form')
+});
 
 
-	// set city by name
+app.post("/temp", function(req, res) {
+        weather.setLang('pt');
+        weather.setAPPID(apiKey);
+        weather.setUnits('metric');
+        weather.setCity("lisboa");
+        console.log(req.body)
+        weather.getTemperature(function(err, temp){
+            console.log(temp)
+        });
+});
 
-	// 'metric'  'internal'  'imperial'
-
-	// check http://openweathermap.org/appid#get for get the APPID
-
-
-    const server = http.createServer((req, res) => {
-        
-        if (req.method === 'POST') {
-            collectRequestData(req, result => {
-                weather.setLang('pt');
-                weather.setAPPID(apiKey);
-                weather.setUnits('metric');
-                weather.setCity(result.city);
-                weather.getTemperature(function(err, temp){
-                    res.end(`
-                    <!doctype html>
-                    <html>
-                        <head>
-                            <meta charset="utf-8" />
-                            <title>Sample Response</title>
-                        </head>
-                    <body>
-                        <div style="background-color: lightgray; width: 120px; padding: 5px; padding-left:30px ;border-radius: 15px">
-                        <h1>
-                            ${result.city}
-                        </h1>
-                        <h4>
-                            ${temp} ºC
-                        </h4>
-                    </div>
-                        </form>
-                    </body>
-                    </html>
-                `);
-                });
-            });
-        }else{
-            res.end(`
-                <!doctype html>
-                <html>
-                    <head>
-                        <meta charset="utf-8" />
-                        <title>Sample Response</title>
-                    </head>
-                <body>
-                    <form action="/" method="post">
-                        <input type="text" name="city" /><br />
-                        <button>Check</button>
-                    </form>
-                </body>
-                </html>
-            `);
-        }
-    });
-    server.listen(8000);
-
-    function collectRequestData(request, callback) {
-        const FORM_URLENCODED = 'application/x-www-form-urlencoded';
-        if(request.headers['content-type'] === FORM_URLENCODED) {
-            let body = '';
-            request.on('data', chunk => {
-                body += chunk.toString();
-            });
-            request.on('end', () => {
-                callback(parse(body));
-            });
-        }
-        else {
-            callback(null);
-        }
-    }
-
+app.listen(8000, function() {
+    console.log("Servidor a funcionar!")
+});
