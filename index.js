@@ -19,13 +19,15 @@ app.get("/", function(req, res) {
 });
 
 
-app.post("/temp", function(req, res) {
+app.post("/", function(req, res) {
         weather.setLang('pt');
         weather.setAPPID(apiKey);
         weather.setUnits('metric');
         weather.setCity(req.body.city);
         weather.getTemperature(function(err, temp){
-            res.send('<h1>'+ req.body.city +'</h1><h4>'+temp+'</h4>');
+                //res.send('<h1>Cidade Não Existe no Sistema</h1>')
+                res.send('<h1>'+ req.body.city +'</h1><h4>'+temp+'</h4>');
+            
         });
 });
 
