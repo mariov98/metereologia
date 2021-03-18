@@ -1,36 +1,38 @@
 const express = require('express');
-const app = express();
-const bodyParser = require('body-parser')
-var weather = require('openweather-apis');
+const app = express()
+var api = require('./api');
 const handlebars = require('express-handlebars')
-let apiKey = '34bc4e52df32eb5758d9e67bd2b39e43';
+const bodyParser = require('body-parser')
 const path = require('path');
 
-
+//Config
+//Template Engine
 app.engine('handlebars', handlebars({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
     //Body Parser
 app.use(bodyParser.urlencoded({ extended: false }))
-    //app.use(bodyParser.json);
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '/')));
 
+
+//Rota
 app.get("/", function(req, res) {
+
     res.render('form')
 });
 
 
+
 app.post("/", function(req, res) {
-        weather.setLang('pt');
-        weather.setAPPID(apiKey);
-        weather.setUnits('metric');
-        weather.setCity(req.body.city);
-        weather.getTemperature(function(err, temp){
-                //res.send('<h1>Cidade Não Existe no Sistema</h1>')
-                res.send('<h1>'+ req.body.city +'</h1><h4>'+temp+'</h4>');
-            
-        });
+    var temp = api.getWeather(req,temp);
+    res.send(""+temp);
+    //"Cidade não existe!" + "<br>" + '<input type="button" value="Go Back From Whence You Came!" onclick="history.back(-1)" />'
+    //+ '<input type="button" value="Go Back From Whence You Came!" onclick="history.back(-1)" />
+
 });
 
-app.listen(8000, function() {
+
+
+app.listen(8081, function() {
     console.log("Servidor a funcionar!")
 });
