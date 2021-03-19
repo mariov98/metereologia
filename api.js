@@ -1,7 +1,7 @@
 var axios = require("axios").default;
 
 var getWeather = (req, callback) => {
-
+//Parâmetros a enviar para a API
     var options = {
         method: 'GET',
         url: 'https://community-open-weather-map.p.rapidapi.com/weather',
@@ -16,6 +16,7 @@ var getWeather = (req, callback) => {
         }
     };
 
+    //Realização do Pedido e Obtenção da Resposta
     axios.request(options).then(function(response) {
         //console.log(response);
         return callback(null, response.data);
