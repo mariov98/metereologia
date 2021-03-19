@@ -20,10 +20,7 @@ var getWeather = (req, callback) => {
     axios.request(options).then(function(response) {
         //console.log(response);
         return callback(null, response.data);
-
-        // console.log(response.body);
     }).catch(function(err) {
-        //console.error(err,null);
         return callback(err);
 
     });
